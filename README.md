@@ -4,6 +4,8 @@ Optional is a robust option/maybe type for C#.
 
 Version: 4.0.0
 
+[![Build status](https://ci.appveyor.com/api/projects/status/cv9so15x40t0kuo3/branch/develop?svg=true)](https://ci.appveyor.com/project/pizycki/optional-yjm4g/branch/develop)
+
 ## What and Why?
 
 Optional is a strongly typed alternative to null values that lets you:
