@@ -1,16 +1,22 @@
 var target = Argument("target", "Default");
 
+var sln = File("./src/Optional.sln");
+
 Task("Default")
+    .IsDependentOn("Restore")
     .IsDependentOn("Build")
-    .IsDependentOn("Test")
+    .IsDependentOn("Test");
+
+Task("Restore")
     .Does(() =>
     {
+        NuGetRestore(sln);
     });
 
 Task("Build")
     .Does(() =>
     {
-        MSBuild("./src/Optional.sln", new MSBuildSettings 
+        MSBuild(sln, new MSBuildSettings 
         {
             Verbosity = Verbosity.Minimal,
             ToolVersion = MSBuildToolVersion.VS2017,
