@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Optional</id>
-    <version>5.0.0-alpha</version>
+    <id>BC.Optional</id>
     <title>Optional: A robust option type</title>
-    <authors>Nils Lück</authors>
-    <owners>Nils Lück</owners>
-    <projectUrl>https://github.com/nlkl/Optional</projectUrl>
+    <authors>Nils Lück, British Council contributors</authors>
+    <owners>British Council contributors</owners>
+    <projectUrl>https://github.com/british-council/Optional</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/nlkl/Optional/master/icon/Icon.png</iconUrl>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
