@@ -2,7 +2,8 @@
 
 using Optional;
 
-Option<string> nugetPackageVersion = Argument<string>("nugetPackageVersion", null).SomeNotNull();
+Option<string> NuGetPackageVersion = Argument<string>("nugetPackageVersion", null).SomeNotNull();
+Option<string> NuGetApiKey => (Argument<string>("nugetApiKey", null) ?? System.Environment.GetEnvironmentVariable("BC_OPTIONAL_NUGET_APIKEY")).SomeNotNull();
 
 var target = Argument("target", "Default");
 
@@ -38,20 +39,39 @@ Task("Test")
         MSTest("./src/Optional.Tests/bin/release/**/Optional.Tests.dll");
     });
 
+Task("CleanNuGetPackages")
+    .Does(()=>{
+        DeleteFiles("./nuget/**/*.nupkg");
+        Information("Deleted all old NuGet package files.");
+    });
+
 Task("Pack")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
-    .Does(() =>
-    {
-        nugetPackageVersion.Match(
+    .IsDependentOn("CleanNuGetPackages")
+    .Does(() =>    
+        NuGetPackageVersion.Match(
             some: version => Pack("Optional", version, new [] { "net35", "net45", "netstandard1.0", "netstandard2.0" }),
-            none: () => throw new Exception("Required argument with Nuget Package Version was not provided.")
-        );
-    });
-    
+            none: () => throw new Exception("Required argument with Nuget Package Version was not provided.")));
+
+Task("PublishToNuget")
+    .IsDependentOn("Pack")
+    .Does(() => NuGetApiKey.Match(
+        none: () => throw new Exception("NuGet API was not provided in any way."),
+        some: apiKey => {
+            var nupkgFiles = GetFiles("nuget/**/*.nupkg");
+            foreach(var nupkg in nupkgFiles) {
+                try {
+                    PushToNuget(nupkg, apiKey);
+                } catch(System.Exception) {
+                    // swallow 
+                }
+            }
+        }));
+
 RunTarget(target);
 
-public void Pack(string projectName, string version, string[] targets) 
+void Pack(string projectName, string version, string[] targets) 
 {
     var nuGetPackSettings   = new NuGetPackSettings 
     {
@@ -67,5 +87,14 @@ public void Pack(string projectName, string version, string[] targets)
             })
             .ToArray()
     };
+
     NuGetPack("./nuget/" + projectName + ".nuspec", nuGetPackSettings);
+}
+
+void PushToNuget(FilePath package, string apiKey) {
+    var settings = new NuGetPushSettings {
+        Source = "https://api.nuget.org/v3/index.json",
+        ApiKey = apiKey
+    };
+    NuGetPush(package, settings);
 }

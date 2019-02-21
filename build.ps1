@@ -45,6 +45,7 @@ Param(
     [string]$Target,
     [string]$Configuration,
     [string]$NugetPackageVersion,
+    [string]$NugetApiKey,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
     [string]$Verbosity,
     [switch]$ShowDescription,
@@ -222,7 +223,8 @@ if (!(Test-Path $CAKE_EXE)) {
 $cakeArguments = @("$Script");
 if ($Target) { $cakeArguments += "-target=$Target" }
 if ($Configuration) { $cakeArguments += "-configuration=$Configuration" }
-if ($NugetPackageVersion) { $cakeArguments += "-nugetPackageVersion=$NugetPackageVersion" }
+if ($NugetPackageVersion) { $cakeArguments += "-nugetPackageVersion=$NugetPackageVersion" } 
+if ($NugetApiKey) { $cakeArguments += "-nugetApiKey=$NugetApiKey" }
 if ($Verbosity) { $cakeArguments += "-verbosity=$Verbosity" }
 if ($ShowDescription) { $cakeArguments += "-showdescription" }
 if ($DryRun) { $cakeArguments += "-dryrun" }
