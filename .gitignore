@@ -265,3 +265,4 @@ __pycache__/
 tools/*
 !tools/nuget.exe
 !tools/packages.config
+*.nupkg
