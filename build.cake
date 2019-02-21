@@ -1,3 +1,9 @@
+#addin nuget:?package=Optional&version=4.0.0
+
+using Optional;
+
+Option<string> nugetPackageVersion = Argument<string>("nugetPackageVersion", null).SomeNotNull();
+
 var target = Argument("target", "Default");
 
 var sln = File("./src/Optional.sln");
@@ -37,15 +43,19 @@ Task("Pack")
     .IsDependentOn("Test")
     .Does(() =>
     {
-        Pack("Optional", new [] { "net35", "net45", "netstandard1.0", "netstandard2.0" });
+        nugetPackageVersion.Match(
+            some: version => Pack("Optional", version, new [] { "net35", "net45", "netstandard1.0", "netstandard2.0" }),
+            none: () => throw new Exception("Required argument with Nuget Package Version was not provided.")
+        );
     });
     
 RunTarget(target);
 
-public void Pack(string projectName, string[] targets) 
+public void Pack(string projectName, string version, string[] targets) 
 {
     var nuGetPackSettings   = new NuGetPackSettings 
     {
+        Version = version, 
         NoPackageAnalysis = true,
         BasePath = "./src/" + projectName + "/bin/release",
         OutputDirectory = "./nuget/" + projectName,
