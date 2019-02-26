@@ -1,4 +1,4 @@
-#addin nuget:?package=Optional&version=4.0.0
+#addin nuget:?package=BC.Optional&version=1.0.0
 
 using Optional;
 
