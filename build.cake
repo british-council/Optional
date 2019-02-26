@@ -52,7 +52,7 @@ Task("PackNuget")
     .Does(PackNuget);
 
 Task("PublishToNuget")
-    .IsDependentOn("Pack")
+    .IsDependentOn("PackNuget")
     .Does(PublishToNuget);
 
 RunTarget(target);
@@ -80,7 +80,7 @@ void Pack(string projectName, string version, string[] targets)
 void PackNuget() {
     NuGetPackageVersion.Match(
             some: version => Pack("Optional", version, new [] { "net35", "net45", "netstandard1.0", "netstandard2.0" }),
-            none: () => throw new Exception("Required argument with Nuget Package Version was not provided."))
+            none: () => throw new Exception("Required argument with Nuget Package Version was not provided."));
 }
 
 void PublishToNuget() {
