@@ -45,29 +45,15 @@ Task("CleanNuGetPackages")
         Information("Deleted all old NuGet package files.");
     });
 
-Task("Pack")
+Task("PackNuget")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("CleanNuGetPackages")
-    .Does(() =>    
-        NuGetPackageVersion.Match(
-            some: version => Pack("Optional", version, new [] { "net35", "net45", "netstandard1.0", "netstandard2.0" }),
-            none: () => throw new Exception("Required argument with Nuget Package Version was not provided.")));
+    .Does(PackNuget);
 
 Task("PublishToNuget")
     .IsDependentOn("Pack")
-    .Does(() => NuGetApiKey.Match(
-        none: () => throw new Exception("NuGet API was not provided in any way."),
-        some: apiKey => {
-            var nupkgFiles = GetFiles("nuget/**/*.nupkg");
-            foreach(var nupkg in nupkgFiles) {
-                try {
-                    PushToNuget(nupkg, apiKey);
-                } catch(System.Exception) {
-                    // swallow 
-                }
-            }
-        }));
+    .Does(PublishToNuget);
 
 RunTarget(target);
 
@@ -89,6 +75,23 @@ void Pack(string projectName, string version, string[] targets)
     };
 
     NuGetPack("./nuget/" + projectName + ".nuspec", nuGetPackSettings);
+}
+
+void PackNuget() {
+    NuGetPackageVersion.Match(
+            some: version => Pack("Optional", version, new [] { "net35", "net45", "netstandard1.0", "netstandard2.0" }),
+            none: () => throw new Exception("Required argument with Nuget Package Version was not provided."))
+}
+
+void PublishToNuget() {
+    NuGetApiKey.Match(
+        none: () => throw new Exception("NuGet API was not provided in any way."),
+        some: apiKey => {
+            var nupkgFiles = GetFiles("nuget/**/*.nupkg");
+            foreach(var nupkg in nupkgFiles) {
+                PushToNuget(nupkg, apiKey);
+            }
+        });
 }
 
 void PushToNuget(FilePath package, string apiKey) {
