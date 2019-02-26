@@ -36,6 +36,8 @@ Task("UnitTest")
     .IsDependentOn("Build")
     .Does(RunUnitTests);
 
+Task("UnitTest-Only")
+    .Does(RunUnitTests);
 
 Task("CleanNuGetPackages")
     .Does(()=>{

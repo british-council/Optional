@@ -1,1 +1,1 @@
-&.\build.ps1 -Target UnitTest
+&.\build.ps1 -Target UnitTest-Only
