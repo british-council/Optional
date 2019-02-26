@@ -4,7 +4,12 @@ Optional is a robust option/maybe type for C#.
 
 Version: 4.0.0
 
-[![Build status](https://ci.appveyor.com/api/projects/status/cv9so15x40t0kuo3/branch/develop?svg=true)](https://ci.appveyor.com/project/pizycki/optional-yjm4g/branch/develop)
+| CI | NuGet |
+| ---- | ---- |
+| [![Build status](https://ci.appveyor.com/api/projects/status/cv9so15x40t0kuo3/branch/develop?svg=true)](https://ci.appveyor.com/project/pizycki/optional-yjm4g/branch/develop)|![Nuget](https://img.shields.io/nuget/v/BC.Optional.svg)|
+
+
+
 
 ## What and Why?
 
