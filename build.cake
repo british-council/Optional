@@ -12,7 +12,7 @@ var sln = File("./src/Optional.sln");
 Task("Default")
     .IsDependentOn("Restore")
     .IsDependentOn("Build")
-    .IsDependentOn("Test");
+    .IsDependentOn("UnitTest");
 
 Task("Restore")
     .Does(() =>
@@ -32,12 +32,10 @@ Task("Build")
         });
     });
 
-Task("Test")
+Task("UnitTest")
     .IsDependentOn("Build")
-    .Does(() =>
-    {
-        MSTest("./src/Optional.Tests/bin/release/**/Optional.Tests.dll");
-    });
+    .Does(RunUnitTests);
+
 
 Task("CleanNuGetPackages")
     .Does(()=>{
@@ -47,7 +45,7 @@ Task("CleanNuGetPackages")
 
 Task("PackNuget")
     .IsDependentOn("Build")
-    .IsDependentOn("Test")
+    .IsDependentOn("UnitTest")
     .IsDependentOn("CleanNuGetPackages")
     .Does(PackNuget);
 
@@ -75,6 +73,10 @@ void Pack(string projectName, string version, string[] targets)
     };
 
     NuGetPack("./nuget/" + projectName + ".nuspec", nuGetPackSettings);
+}
+
+void RunUnitTests(){
+    MSTest("./src/Optional.Tests/bin/release/**/Optional.Tests.dll");
 }
 
 void PackNuget() {
